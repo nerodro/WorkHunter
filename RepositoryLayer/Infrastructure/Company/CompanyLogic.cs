@@ -1,4 +1,6 @@
 ﻿using DomainLayer.Models.Company;
+using Microsoft.EntityFrameworkCore;
+using RepositoryLayer.DataBasesContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,40 +11,64 @@ namespace RepositoryLayer.Infrastructure.Company
 {
     public class CompanyLogic<T> : ICompanyLogic<T> where T : CompanyModel
     {
-
+        private readonly CompanyContext context;
+        private DbSet<T> entities;
+        public CompanyLogic(CompanyContext context)
+        {
+            this.context = context;
+            entities = context.Set<T>();
+        }
         public void Create(T entity)
         {
-            throw new NotImplementedException();
+            if(entity != null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Add(entity);
+            context.SaveChanges();
         }
 
         public void Delete(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Remove(entity);
+            context.SaveChanges();
         }
 
         public T Get(int id)
         {
-            throw new NotImplementedException();
+            return entities.SingleOrDefault(s => s.Id == id);
         }
 
         public IEnumerable<T> GetAll()
         {
-            throw new NotImplementedException();
+            return entities.AsEnumerable();
         }
 
         public void Remove(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Remove(entity);
         }
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
+            context.SaveChanges();
         }
 
         public void Update(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            context.SaveChanges();
         }
     }
 }
