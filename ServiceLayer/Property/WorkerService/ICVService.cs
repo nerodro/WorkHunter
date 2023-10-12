@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DomainLayer.Models.JobHunter;
+using DomainLayer.Models.Vacancies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace ServiceLayer.Property.WorkerService
 {
-    internal interface ICVService
+    public interface ICVService
     {
+        IEnumerable<CVModel> GetAll();
+        CVModel GetCV(int id);
+        void Create(CVModel cv);
+        void Update(CVModel cv);
+        void Delete(int id);
     }
 }

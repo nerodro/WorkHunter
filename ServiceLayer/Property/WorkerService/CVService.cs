@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceLayer.Property.VacanciesService
+namespace ServiceLayer.Property.WorkerService
 {
     internal class CVService
     {

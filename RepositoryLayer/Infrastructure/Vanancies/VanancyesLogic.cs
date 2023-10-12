@@ -23,7 +23,7 @@ namespace RepositoryLayer.Infrastructure.Vanancies
             return entities.AsEnumerable();
         }
 
-        public T GetCompany(long id)
+        public T GetVacancy(long id)
         {
             return entities.SingleOrDefault(s => s.Id == id);
         }

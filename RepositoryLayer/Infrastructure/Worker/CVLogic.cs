@@ -23,7 +23,7 @@ namespace RepositoryLayer.Infrastructure.Worker
             return entities.AsEnumerable();
         }
 
-        public T GetUser(long id)
+        public T GetCV(long id)
         {
             return entities.SingleOrDefault(s => s.Id == id);
         }

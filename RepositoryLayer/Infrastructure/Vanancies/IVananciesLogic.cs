@@ -10,7 +10,7 @@ namespace RepositoryLayer.Infrastructure.Vanancies
     public interface IVananciesLogic<T> where T : VanancyModel
     {
         IEnumerable<T> GetAll();
-        T GetCompany(long id);
+        T GetVacancy(long id);
         T Get(long id);
         void Create(T entity);
         void Update(T entity);

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace RepositoryLayer.Infrastructure.Worker
 {
-    internal interface IUserLogic<T> where T : UserModel
+    public interface IUserLogic<T> where T : UserModel
     {
         IEnumerable<T> GetAll();
-        T GetCV(long id);
+        T GetUser(long id);
         T Get(long id);
         void Create(T entity);
         void Update(T entity);

@@ -10,7 +10,7 @@ namespace RepositoryLayer.Infrastructure.Worker
     public interface ICVLogic<T> where T : CVModel
     {
         IEnumerable<T> GetAll();
-        T GetUser(long id);
+        T GetCV(long id);
         T Get(long id);
         void Create(T entity);
         void Update(T entity);
