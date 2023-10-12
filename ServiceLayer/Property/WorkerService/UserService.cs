@@ -11,31 +11,31 @@ namespace ServiceLayer.Property.WorkerService
     public class UserService : IUserService
     {
         private IUserLogic<UserModel> _user;
-        public UserService(IU<UserModel> user)
+        public UserService(IUserLogic<UserModel> user)
         {
-            _cv = cv;
+           _user = user;
         }
         public IEnumerable<UserModel> GetAll()
         {
-            return _cv.GetAll();
+            return _user.GetAll();
         }
-        public UserModel GetCV(int id)
+        public UserModel GetUser(int id)
         {
-            return _cv.GetCV(id);
+            return _user.GetUser(id);
         }
-        public void Create(UserModel cv)
+        public void Create(UserModel user)
         {
-            _cv.Create(cv);
+            _user.Create(user);
         }
-        public void Update(UserModel cv)
+        public void Update(UserModel user)
         {
-            _cv.Update(cv);
+            _user.Update(user);
         }
         public void Delete(int id)
         {
-            UserModel cv = GetCV(id);
-            _cv.Delete(cv);
-            _cv.SaveChanges();
+            UserModel user = GetUser(id);
+            _user.Delete(user);
+            _user.SaveChanges();
         }
     }
 }
