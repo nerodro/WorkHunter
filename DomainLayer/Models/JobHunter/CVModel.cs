@@ -11,6 +11,6 @@ namespace DomainLayer.Models.JobHunter
         public int Id { get; set; }
         public string WantedJob { get; set; } = null!;
         public string LongText { get; set; } = null!;
-        public UserModel User { get; set; }
+      //  public UserModel User { get; set; }
     }
 }

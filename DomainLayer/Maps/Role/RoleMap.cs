@@ -15,11 +15,6 @@ namespace DomainLayer.Maps.Role
         {
             entityTypeBuilder.HasKey(x => x.Id);
             entityTypeBuilder.Property(x => x.RoleName).IsRequired();
-            entityTypeBuilder.Property(x => x.status).IsRequired();
-            entityTypeBuilder.Property(x => x.Email).IsRequired();
-            entityTypeBuilder.Property(x => x.Password).IsRequired();
-            entityTypeBuilder.Property(x => x.PhoneNumber).IsRequired();
-            entityTypeBuilder.Property(x => x.PhoneNumber).IsRequired();
         }
     }
 }

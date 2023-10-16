@@ -16,14 +16,14 @@ namespace DomainLayer.Models.JobHunter
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public int status { get; set; } = 0!;
-        public virtual CVModel CVModel { get; set; }
+       // public virtual CVModel CVModel { get; set; }
         public int RoleId { get; set; } = 0!;
         public RoleModel Role { get; set; }
-        public virtual List<ResponseModel> Responses { get; set; }
-        public UserModel() 
-        {
-            Responses = new List<ResponseModel>();
-        }
+        //public virtual List<ResponseModel> Responses { get; set; }
+        //public UserModel() 
+        //{
+        //    Responses = new List<ResponseModel>();
+        //}
         //public virtual Role Role { get; set; }
     }
 }

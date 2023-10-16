@@ -14,7 +14,6 @@ namespace RepositoryLayer.DataBasesContext
         public DbSet<VanancyModel> Vanancy { get; set; }
         public VacancyContext(DbContextOptions<VacancyContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
     }
