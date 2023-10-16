@@ -2,6 +2,7 @@
 using JobGiver.Models;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.Property.CompanyService;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace JobGiver.Controllers
 {
@@ -31,14 +32,15 @@ namespace JobGiver.Controllers
                         CompanyPhone = u.CompanyPhone,
                         CompanyStatus = u.CompanyStatus,
                     };
+                    model.Add(modelModel);
                 });
             }
             return model;
         }
         [HttpPost("CreateCompany")]
-        public async Task<IActionResult> AddCompay(CompanyViewModel model)
+        public ActionResult AddCompay(CompanyViewModel model)
         {
-            CompanyModel company = new CompanyModel()
+            CompanyModel company = new CompanyModel
             {
                 CompanyName = model.CompanyName,
                 CompanyDescription = model.CompanyDescription,

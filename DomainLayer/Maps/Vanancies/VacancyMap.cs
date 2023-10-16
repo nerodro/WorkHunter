@@ -15,7 +15,7 @@ namespace DomainLayer.Maps.Vanancies
             entityTypeBuilder.HasKey(x => x.Id);
             entityTypeBuilder.Property(t => t.NameJob).IsRequired();
             entityTypeBuilder.Property(t => t.TextJob).IsRequired();
-            entityTypeBuilder.Property(t => t.CompanyId).IsRequired();
+            //entityTypeBuilder.Property(t => t.CompanyId).IsRequired();
         }
     }
 }

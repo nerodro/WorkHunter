@@ -20,7 +20,7 @@ namespace RepositoryLayer.Infrastructure.Company
         }
         public void Create(T entity)
         {
-            if(entity != null)
+            if(entity == null)
             {
                 throw new ArgumentNullException("entity");
             }

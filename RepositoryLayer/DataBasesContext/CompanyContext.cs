@@ -23,8 +23,9 @@ namespace RepositoryLayer.DataBasesContext
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+
             new CompanyMap(modelBuilder.Entity<CompanyModel>());
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

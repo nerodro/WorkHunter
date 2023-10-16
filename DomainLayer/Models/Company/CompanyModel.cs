@@ -15,11 +15,11 @@ namespace DomainLayer.Models.Company
         public string CompanyPhone { get; set;} = null!;
         public string CompanyEmail { get; set; } = null!;
         public int CompanyStatus { get; set; }
-        public List<VanancyModel> Vanancy { get; set; }
-        public CompanyModel()
-        {
-            Vanancy = new List<VanancyModel>();
-        }
+        //public List<VanancyModel> Vanancy { get; set; }
+        //public CompanyModel()
+        //{
+        //    Vanancy = new List<VanancyModel>();
+        //}
 
     }
 }

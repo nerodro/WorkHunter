@@ -12,8 +12,8 @@ namespace DomainLayer.Models.Vacancies
         public int Id { get; set; }
         public string NameJob { get; set; } = null!;
         public string TextJob { get; set; } = null!;
-        public int CompanyId { get; set; } = 0!;
-        public CompanyModel Company { get; set; } = null!;
+        //public int CompanyId { get; set; } = 0!;
+        //public CompanyModel Company { get; set; } = null!;
         public List<ResponseModel> Response { get; set; }
         public VanancyModel() 
         { 
