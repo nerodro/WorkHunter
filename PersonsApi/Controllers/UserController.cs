@@ -1,6 +1,12 @@
-﻿namespace PersonsApi.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using ServiceLayer.Property.WorkerService;
+
+namespace PersonsApi.Controllers
 {
-    public class UserController
+    [ApiController]
+    [Route("[controller]")]
+    public class UserController : ControllerBase
     {
+        IUserService
     }
 }

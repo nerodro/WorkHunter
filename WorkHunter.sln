@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkHunter", "WorkHunter\WorkHunter.csproj", "{43248519-BA39-4A2B-8D34-76A736DD6658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vacancies", "WorkHunter\Vacancies.csproj", "{43248519-BA39-4A2B-8D34-76A736DD6658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainLayer", "DomainLayer\DomainLayer.csproj", "{41529B60-7645-4A5F-A783-2ED5C19A0AD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainLayer", "DomainLayer\DomainLayer.csproj", "{41529B60-7645-4A5F-A783-2ED5C19A0AD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryLayer", "RepositoryLayer\RepositoryLayer.csproj", "{5E711A0A-52AC-4056-B122-AA7FDCBFF2A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLayer", "RepositoryLayer\RepositoryLayer.csproj", "{5E711A0A-52AC-4056-B122-AA7FDCBFF2A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{670A8EC6-56E5-4422-8643-6711F309678F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{670A8EC6-56E5-4422-8643-6711F309678F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroserviceApplication", "MicroserviceApplication", "{C3C0CC8F-A7A1-48F9-9A4C-0683DC6DB113}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonsApi", "PersonsApi\PersonsApi.csproj", "{130ACA99-3D7B-4910-B0DD-C318CE724DAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User", "PersonsApi\User.csproj", "{130ACA99-3D7B-4910-B0DD-C318CE724DAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobGiver", "JobGiver\JobGiver.csproj", "{32C35EA6-90C6-4E4D-9754-5CFB78D6B0F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company", "JobGiver\Company.csproj", "{32C35EA6-90C6-4E4D-9754-5CFB78D6B0F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
