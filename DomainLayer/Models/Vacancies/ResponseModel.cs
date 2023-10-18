@@ -12,7 +12,7 @@ namespace DomainLayer.Models.Vacancies
         public int Id { get; set; }
         public int VacancyId { get; set; } = 0!;
         public VanancyModel Vanancy { get; set; }
-        public int UserId { get; set; } = 0!;
-        public UserModel User { get; set; }
+        //public int UserId { get; set; } = 0!;
+        //public UserModel User { get; set; }
     }
 }
