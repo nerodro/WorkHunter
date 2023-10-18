@@ -20,8 +20,6 @@ builder.Services.AddDbContext<CompanyContext>(options => options.UseNpgsql(conne
 //builder.Services.AddHealthChecks().ForwardToPrometheus();
 
 builder.Services.AddScoped(typeof(ICompanyLogic<>), typeof(CompanyLogic<>));
-//builder.Services.AddScoped(typeof(IRoleLogic<>), typeof(RoleLogic<>));
-//builder.Services.AddTransient<IRoleService, RoleService>(); 
 builder.Services.AddTransient<ICompanyService, CompanyService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
