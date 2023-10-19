@@ -103,5 +103,10 @@ namespace JobGiver.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("GetVacanciesCompany/{id}")]
+        public ActionResult GetVacancies(int id) 
+        {
+            return Ok();
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace DomainLayer.Models.Vacancies
     public class ResponseModel
     {
         public int Id { get; set; }
-        public int VacancyId { get; set; } = 0!;
+        public int VanancyId { get; set; } = 0!;
         public VanancyModel Vanancy { get; set; }
         //public int UserId { get; set; } = 0!;
         //public UserModel User { get; set; }

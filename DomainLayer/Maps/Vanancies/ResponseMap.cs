@@ -13,8 +13,8 @@ namespace DomainLayer.Maps.Vanancies
         public ResponseMap(EntityTypeBuilder<ResponseModel> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.Property(t => t.UserId).IsRequired();
-            entityTypeBuilder.Property(t => t.VacancyId).IsRequired();
+            //entityTypeBuilder.Property(t => t.UserId).IsRequired();
+            entityTypeBuilder.Property(t => t.VanancyId).IsRequired();
         }
     }
 }

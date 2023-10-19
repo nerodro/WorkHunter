@@ -26,7 +26,7 @@ namespace WorkHunter.Controllers
                     ResponseViewModel response = new ResponseViewModel
                     {
                         Id = u.Id,
-                        VacancyId = u.VacancyId
+                        VacancyId = u.VanancyId
                     };
                     model.Add(response);
                 });
@@ -38,7 +38,7 @@ namespace WorkHunter.Controllers
         {
             ResponseModel cv = new ResponseModel
             {
-                VacancyId=model.VacancyId,
+                VanancyId=model.VacancyId,
             };
             _responceService.Create(cv);
             return CreatedAtAction("SingleResponse", new { id = cv.Id }, model);
@@ -50,7 +50,7 @@ namespace WorkHunter.Controllers
             ResponseModel response = _responceService.GetResponse(id);
             if (ModelState.IsValid)
             {
-                response.VacancyId = model.VacancyId;
+                response.VanancyId = model.VacancyId;
                 _responceService.Update(response);
                 return Ok(model);
             }
@@ -70,7 +70,7 @@ namespace WorkHunter.Controllers
             if (id != 0)
             {
                 ResponseModel response = _responceService.GetResponse(id);
-                response.VacancyId = model.VacancyId;
+                response.VanancyId = model.VacancyId;
                 return new ObjectResult(model);
             }
             return BadRequest();

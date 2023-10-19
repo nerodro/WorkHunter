@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.Property.VacanciesService;
 using Vacancies.Models;
+using Vacancies.RabitMQ;
 
 namespace WorkHunter.Controllers
 {
@@ -10,11 +11,13 @@ namespace WorkHunter.Controllers
     public class VacanciesController : ControllerBase
     {
         private readonly IVacancyService _vacancyService;
-        public VacanciesController(IVacancyService vacancyService)
+        private readonly IRabitMQProducer _rabitMQ;
+        public VacanciesController(IVacancyService vacancyService, IRabitMQProducer rabitMQ)
         {
             _vacancyService = vacancyService;
+            _rabitMQ = rabitMQ;
         }
-        [HttpGet("GetAllResposes")]
+        [HttpGet("GetAllVacancies")]
         public IEnumerable<VacancyViewModel> GetVacancy()
         {
             List<VacancyViewModel> model = new List<VacancyViewModel>();
@@ -27,10 +30,12 @@ namespace WorkHunter.Controllers
                         Id = u.Id,
                         NameJob = u.NameJob,
                         TextJob = u.TextJob,
+                        CompanyId = u.CompanyId,
                     };
                     model.Add(Vacancy);
                 });
             }
+            _rabitMQ.SendVacanciesMessage(model);
             return model;
         }
         [HttpPost("MakeVacancy")]
@@ -40,6 +45,7 @@ namespace WorkHunter.Controllers
             {
                 NameJob = model.NameJob,
                 TextJob = model.TextJob,
+                CompanyId = model.CompanyId,
             };
             _vacancyService.Create(cv);
             return CreatedAtAction("SingleVacancy", new { id = cv.Id }, model);
@@ -53,6 +59,7 @@ namespace WorkHunter.Controllers
             {
                 vacancy.NameJob = model.NameJob;
                 vacancy.TextJob = model.TextJob;
+                vacancy.CompanyId = model.CompanyId;
                 _vacancyService.Update(vacancy);
                 return Ok(model);
             }
@@ -74,6 +81,7 @@ namespace WorkHunter.Controllers
                 VanancyModel vacancy = _vacancyService.GetVanancy(id);
                 model.NameJob = vacancy.NameJob;
                 model.TextJob = vacancy.TextJob;
+                model.CompanyId = vacancy.CompanyId;
                 return new ObjectResult(model);
             }
             return BadRequest();
