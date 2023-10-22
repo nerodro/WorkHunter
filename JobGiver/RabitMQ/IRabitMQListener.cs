@@ -2,5 +2,6 @@
 {
     public interface IRabitMQListener
     {
+        public Task TakeVacanciesMessage(string queue);
     }
 }

@@ -1,3 +1,4 @@
+using Company.RabitMQ;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.DataBasesContext;
@@ -20,6 +21,8 @@ builder.Services.AddDbContext<CompanyContext>(options => options.UseNpgsql(conne
 //builder.Services.AddHealthChecks().ForwardToPrometheus();
 
 builder.Services.AddScoped(typeof(ICompanyLogic<>), typeof(CompanyLogic<>));
+builder.Services.AddScoped<IRabitMQListener, RabitMQListener>();
+builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
 builder.Services.AddTransient<ICompanyService, CompanyService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

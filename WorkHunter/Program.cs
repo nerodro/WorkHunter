@@ -19,6 +19,7 @@ builder.Services.AddDbContext<VacancyContext>(options => options.UseNpgsql(conne
 builder.Services.AddScoped(typeof(IVananciesLogic<>), typeof(VanancyesLogic<>));
 builder.Services.AddScoped(typeof(IResponseLogic<>), typeof(ResponseLogic<>));
 builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
+
 builder.Services.AddTransient<IResponceService, ResponceService>();
 builder.Services.AddTransient<IVacancyService, VacancyService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
