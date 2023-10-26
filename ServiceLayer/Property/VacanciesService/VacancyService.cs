@@ -19,7 +19,7 @@ namespace ServiceLayer.Property.VacanciesService
         {
             return _vacancy.GetAll();
         }
-        public VanancyModel GetVanancy(int id)
+        public VanancyModel GetVanancy(long id)
         {
             return _vacancy.GetVacancy(id);
         }
@@ -36,6 +36,10 @@ namespace ServiceLayer.Property.VacanciesService
             VanancyModel vanancy = GetVanancy(id);
             _vacancy.Delete(vanancy);
             _vacancy.SaveChanges();
+        }
+        public IEnumerable<VanancyModel> GetVacanciesForCompany(long id)
+        {
+            return _vacancy.GetVacanciesForCompany(id);
         }
     }
 }

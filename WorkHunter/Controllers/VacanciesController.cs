@@ -1,11 +1,14 @@
 ﻿using DomainLayer.Models.Vacancies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RepositoryLayer.DataBasesContext;
 using ServiceLayer.Property.VacanciesService;
 using System.Text;
 using System.Threading.Channels;
+using System.Transactions;
 using Vacancies.Models;
 using Vacancies.RabitMQ;
 
@@ -16,58 +19,20 @@ namespace WorkHunter.Controllers
     public class VacanciesController : ControllerBase
     {
         private readonly IVacancyService _vacancyService;
-        private readonly IRabitMQProducer _rabbitProducer;
         private readonly IConnection _rabbitMqConnection;
         private readonly IModel _rabbitMqChannel;
-        public VacanciesController(IVacancyService vacancyService, IRabitMQProducer rabitMQ)
+        private readonly IRabitMQProducer _rabbitMqProducer;
+        public VacanciesController(IVacancyService vacancyService, IRabitMQProducer rabitMQProducer)
         {
             _vacancyService = vacancyService;
-            _rabbitProducer = rabitMQ;
-
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            _rabbitMqConnection = factory.CreateConnection();
+            _rabbitMqConnection = GetRabbitMqConnection();
             _rabbitMqChannel = _rabbitMqConnection.CreateModel();
-
-            _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
-
-            var consumer = new EventingBasicConsumer(_rabbitMqChannel);
-            VanancyModel modelvac = new VanancyModel()
-            {
-                Id = 1,
-                TextJob = "Test",
-                NameJob = "Test",
-                CompanyId = 1,
-            };
-            consumer.Received += (model, ea) =>
-            {
-                //var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-                //var companyId = int.Parse(message.Split(':')[1]);
-                //int id = 0;
-                //id = companyId;
-                var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
-
-                // Десериализуем запрос из JSON
-                var request = JsonConvert.DeserializeObject<VacancyViewModel>(requestJson);
-
-                // Выполняем запрос в базе данных для получения списка вакансий для компании
-                //var vacancies = _vacancyService.GetVanancy(request.CompanyId);
-
-                // Сериализуем список вакансий в JSON
-                var responseJson = JsonConvert.SerializeObject(modelvac).ToArray();
-                //modelvac = _vacancyService.GetVanancy(id);
-
-               // var responseMessage = JsonConvert.SerializeObject(modelvac);
-                //var responseBytes = Encoding.UTF8.GetBytes(responseMessage);
-
-                var properties = _rabbitMqChannel.CreateBasicProperties();
-                properties.CorrelationId = ea.BasicProperties.CorrelationId;
-
-                // _rabbitMqChannel.BasicPublish("", ea.BasicProperties.ReplyTo, properties, responseBytes);
-                _rabbitMqChannel.BasicPublish("", ea.BasicProperties.ReplyTo, properties, Encoding.UTF8.GetBytes(responseJson));
-            };
-
-            _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
+            _rabbitMqProducer = rabitMQProducer;
+            var vac = new RabitMQProducer(vacancyService, _rabbitMqConnection, _rabbitMqChannel);
+            vac.SendVacanciesMessage();
+            //InitializeRabbitMqService();
         }
+        
         [HttpGet("GetAllVacancies")]
         public IEnumerable<VacancyViewModel> GetVacancy()
         {
@@ -86,7 +51,6 @@ namespace WorkHunter.Controllers
                     model.Add(Vacancy);
                 });
             }
-            //_rabitMQ.SendVacanciesMessage(model);
             return model;
         }
         [HttpPost("MakeVacancy")]
@@ -124,7 +88,7 @@ namespace WorkHunter.Controllers
             return Ok(Vacancy);
         }
         [HttpGet("SingleVacancy/{id}")]
-        public async Task<ActionResult<VanancyModel>> SingleVacancy(int id)
+        public async Task<ActionResult<VacancyViewModel>> SingleVacancy(int id)
         {
             VacancyViewModel model = new VacancyViewModel();
             if (id != 0)
@@ -136,6 +100,44 @@ namespace WorkHunter.Controllers
                 return new ObjectResult(model);
             }
             return BadRequest();
+        }
+        //private void InitializeRabbitMqService()
+        //{
+        //    _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
+
+        //    var consumer = new EventingBasicConsumer(_rabbitMqChannel);
+
+
+        //    VanancyModel modelvac2 = _vacancyService.GetVanancy(2);
+        //    consumer.Received += (model, ea) =>
+        //    {
+        //        var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
+
+        //        // Десериализуем запрос из JSON
+        //        var request = JsonConvert.DeserializeObject<VacancyViewModel>(requestJson);
+
+        //        int id = request.CompanyId;
+
+        //        using (var scope = new TransactionScope())
+        //        {
+        //            var modelvac2 = _vacancyService.GetVacanciesForCompany(id).ToList();
+
+        //            var responseJson = JsonConvert.SerializeObject(modelvac2).ToArray();
+
+        //            var properties = _rabbitMqChannel.CreateBasicProperties();
+        //            properties.CorrelationId = ea.BasicProperties.CorrelationId;
+
+        //            _rabbitMqChannel.BasicPublish("", ea.BasicProperties.ReplyTo, properties, Encoding.UTF8.GetBytes(responseJson));
+
+        //            scope.Complete();
+        //        }
+        //    };
+        //    _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
+        //}
+        private IConnection GetRabbitMqConnection()
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            return factory.CreateConnection();
         }
     }
 }

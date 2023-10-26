@@ -25,12 +25,16 @@ namespace RepositoryLayer.Infrastructure.Vanancies
 
         public T GetVacancy(long id)
         {
-            return entities.SingleOrDefault(s => s.Id == id);
+            return entities.FirstOrDefault(s => s.Id == id);
         }
 
         public T Get(long id)
         {
             return entities.SingleOrDefault(s => s.Id == id);
+        }
+        public IEnumerable<T> GetVacanciesForCompany(long id)
+        {
+            return entities.Where(s => s.Id == id).ToList();
         }
         public void Create(T entity)
         {

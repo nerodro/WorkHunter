@@ -2,6 +2,6 @@
 {
     public interface IRabitMQProducer
     {
-        public void SendVacanciesMessage <T> (T message);
+        public void SendVacanciesMessage();
     }
 }

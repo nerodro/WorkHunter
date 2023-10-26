@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using RepositoryLayer.DataBasesContext;
 using RepositoryLayer.Infrastructure.Vanancies;
 using RepositoryLayer.Infrastructure.Worker;
@@ -18,8 +19,19 @@ builder.Services.AddDbContext<VacancyContext>(options => options.UseNpgsql(conne
 
 builder.Services.AddScoped(typeof(IVananciesLogic<>), typeof(VanancyesLogic<>));
 builder.Services.AddScoped(typeof(IResponseLogic<>), typeof(ResponseLogic<>));
-builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
+builder.Services.AddSingleton<IConnection>(factory =>
+{
+    var rabbitMqFactory = new ConnectionFactory() { HostName = "localhost" };
+    return rabbitMqFactory.CreateConnection();
+});
 
+builder.Services.AddSingleton<IModel>(provider =>
+{
+    var connection = provider.GetRequiredService<IConnection>();
+    return connection.CreateModel();
+});
+builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
+//builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
 builder.Services.AddTransient<IResponceService, ResponceService>();
 builder.Services.AddTransient<IVacancyService, VacancyService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

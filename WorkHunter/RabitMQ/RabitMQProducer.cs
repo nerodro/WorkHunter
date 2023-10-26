@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using DomainLayer.Models.Vacancies;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using ServiceLayer.Property.VacanciesService;
 using ServiceLayer.Property.WorkerService;
 using System.Text;
+using System.Transactions;
 using Vacancies.Models;
 
 namespace Vacancies.RabitMQ
@@ -11,65 +13,49 @@ namespace Vacancies.RabitMQ
     public class RabitMQProducer : IRabitMQProducer
     {
         private readonly IVacancyService _vacancyService;
-        public RabitMQProducer(IVacancyService vacancyService)
+        private readonly IConnection _rabbitMqConnection;
+        private IModel _rabbitMqChannel;
+        public RabitMQProducer(IVacancyService vacancyService, IConnection rabbitMqConnection, IModel rabbitMqChannel)
         {
             _vacancyService = vacancyService;
+            _rabbitMqConnection = rabbitMqConnection;
+            _rabbitMqChannel = rabbitMqChannel;
         }
-        public void SendVacanciesMessage<T>(T message)
+
+        public void SendVacanciesMessage()
         {
-            var connectionFactory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = connectionFactory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            _rabbitMqChannel = _rabbitMqConnection.CreateModel();
+            _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
+
+            var consumer = new EventingBasicConsumer(_rabbitMqChannel);
+
+
+            VanancyModel modelvac2 = _vacancyService.GetVanancy(2);
+            consumer.Received += (model, ea) =>
             {
-                // Создаем очередь сообщений
-                channel.QueueDeclare("vacancy_requests", false, false, false, null);
+                var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-                // Создаем очередь для ответов
+                // Десериализуем запрос из JSON
+                var request = JsonConvert.DeserializeObject<VacancyViewModel>(requestJson);
 
-                // Создаем консумера для чтения сообщений из очереди
-                var consumer = new EventingBasicConsumer(channel);
+                int id = request.CompanyId;
 
-                // Устанавливаем обработчик сообщений
-                consumer.Received += (model, ea) =>
+                using (var scope = new TransactionScope())
                 {
-                    var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
+                    var modelvac2 = _vacancyService.GetVacanciesForCompany(id).ToList();
 
-                    // Десериализуем запрос из JSON
-                    var request = JsonConvert.DeserializeObject<VacancyViewModel>(requestJson);
+                    var responseJson = JsonConvert.SerializeObject(modelvac2).ToArray();
 
-                    // Выполняем запрос в базе данных для получения списка вакансий для компании
-                    var vacancies = _vacancyService.GetVanancy(request.CompanyId);
+                    var properties = _rabbitMqChannel.CreateBasicProperties();
+                    properties.CorrelationId = ea.BasicProperties.CorrelationId;
 
-                    // Сериализуем список вакансий в JSON
-                    var responseJson = JsonConvert.SerializeObject(vacancies);
+                    _rabbitMqChannel.BasicPublish("", ea.BasicProperties.ReplyTo, properties, Encoding.UTF8.GetBytes(responseJson));
 
-                    // Отправляем ответ в очередь ответов
-                    channel.BasicPublish("", "vacancy_requests", null, Encoding.UTF8.GetBytes(responseJson));
-                };
-
-                // Стартуем прослушивание очереди
-                channel.BasicConsume("vacancy_requests", true, consumer);
-            }
+                    scope.Complete();
+                }
+            };
+            _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
         }
-        //}
-        //public class RabitMQProducer : IRabitMQProducer
-        //{
-        //    public void SendVacanciesMessage<T>(T message)
-        //    {
-        //        var factory = new ConnectionFactory
-        //        {
-        //            HostName = "localhost",
-        //            Port = 5672,
-        //            UserName = "guest",
-        //            Password = "guest",
-        //        };
-        //        var connection = factory.CreateConnection();
-        //        using
-        //            var channel = connection.CreateChannel();
-        //        channel.QueueDeclare("vacancie", exclusive: false);
-        //        var json = JsonConvert.SerializeObject(message);
-        //        var body = Encoding.UTF8.GetBytes(json);
-        //        channel.BasicPublish(exchange: "", routingKey: "vacancie", body: body);
-        //    }
     }
 }

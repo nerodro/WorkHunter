@@ -159,31 +159,20 @@ namespace JobGiver.Controllers
             };
             var requestJson = JsonConvert.SerializeObject(request);
             var message = $"CompanyId:{id}";
-            var correlationId = Guid.NewGuid().ToString(); // Создаем уникальный идентификатор для запроса
-
+            var correlationId = Guid.NewGuid().ToString();
             var body = Encoding.UTF8.GetBytes(requestJson);
-
-            // Создаем очередь ответов для получения списка вакансий от сервиса вакансий
             var responseQueueName = _rabbitMqChannel.QueueDeclare().QueueName;
 
-            // Устанавливаем свойство replyTo в имя очереди ответов
             var properties = _rabbitMqChannel.CreateBasicProperties();
             properties.ReplyTo = responseQueueName;
             properties.CorrelationId = correlationId;
-
-            // Опубликовываем сообщение с запросом в очередь
             _rabbitMqChannel.BasicPublish("", "vacancy_requests", properties, body);
-
-            // Создаем объект ожидания ответа
             var responseWaiter = new ManualResetEventSlim(false);
 
             List<VacancyViewModel> modelvac = new List<VacancyViewModel>();
-
-            // Создаем обработчик сообщений для получения списка вакансий от сервиса вакансий
             var consumer = new EventingBasicConsumer(_rabbitMqChannel);
             consumer.Received += (model, ea) =>
             {
-                // Проверяем, что полученное сообщение является ответом на наш запрос и имеет тот же correlation ID
                 if (ea.BasicProperties.CorrelationId == correlationId)
                 {
                     var responseMessage = Encoding.UTF8.GetString(ea.Body.ToArray());
