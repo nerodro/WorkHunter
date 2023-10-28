@@ -30,7 +30,6 @@ namespace Vacancies.RabitMQ
             consumer.Received += (model, ea) =>
             {
                 var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
-
                 // Десериализуем запрос из JSON
                 var request = JsonConvert.DeserializeObject<TRequest>(requestJson);
                 on(request);
