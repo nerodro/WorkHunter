@@ -21,41 +21,34 @@ namespace Vacancies.RabitMQ
             _rabbitMqConnection = rabbitMqConnection;
             _rabbitMqChannel = rabbitMqChannel;
         }
-
-        public void SendVacanciesMessage()
+        public void Listen<TRequest>(Action<TRequest> on)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             _rabbitMqChannel = _rabbitMqConnection.CreateModel();
             _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
-
             var consumer = new EventingBasicConsumer(_rabbitMqChannel);
-
-
-            VanancyModel modelvac2 = _vacancyService.GetVanancy(2);
             consumer.Received += (model, ea) =>
             {
                 var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
 
                 // Десериализуем запрос из JSON
-                var request = JsonConvert.DeserializeObject<VacancyViewModel>(requestJson);
-
-                int id = request.CompanyId;
-
-                using (var scope = new TransactionScope())
-                {
-                    var modelvac2 = _vacancyService.GetVacanciesForCompany(id).ToList();
-
-                    var responseJson = JsonConvert.SerializeObject(modelvac2).ToArray();
-
-                    var properties = _rabbitMqChannel.CreateBasicProperties();
-                    properties.CorrelationId = ea.BasicProperties.CorrelationId;
-
-                    _rabbitMqChannel.BasicPublish("", ea.BasicProperties.ReplyTo, properties, Encoding.UTF8.GetBytes(responseJson));
-
-                    scope.Complete();
-                }
+                var request = JsonConvert.DeserializeObject<TRequest>(requestJson);
+                on(request);
             };
             _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
+        }
+        public void SendVacanciesMessage<T>(VacancyViewModel response)
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            _rabbitMqChannel = _rabbitMqConnection.CreateModel();
+            _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
+            int id = response.CompanyId;
+            var res = _vacancyService.GetVanancy(id);
+             var responseJson = JsonConvert.SerializeObject(res).ToArray();
+
+             var properties = _rabbitMqChannel.CreateBasicProperties();
+
+             _rabbitMqChannel.BasicPublish("", "vacancy_requests", properties, Encoding.UTF8.GetBytes(responseJson));
         }
     }
 }

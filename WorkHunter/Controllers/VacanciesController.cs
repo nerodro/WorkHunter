@@ -29,7 +29,7 @@ namespace WorkHunter.Controllers
             _rabbitMqChannel = _rabbitMqConnection.CreateModel();
             _rabbitMqProducer = rabitMQProducer;
             var vac = new RabitMQProducer(vacancyService, _rabbitMqConnection, _rabbitMqChannel);
-            vac.SendVacanciesMessage();
+            vac.Listen<VacancyViewModel>(CompanyRequest);
         }
         
         [HttpGet("GetAllVacancies")]
@@ -104,6 +104,21 @@ namespace WorkHunter.Controllers
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             return factory.CreateConnection();
+        }
+        private void CompanyRequest(VacancyViewModel model)
+        {
+            //int companyid = (int)model.Id;
+
+            //VanancyModel vacancies = _vacancyService.GetVanancy(companyid);
+
+            //var response = new VacancyViewModel
+            //{
+            //    CompanyId = companyid,
+            //    Id = companyid,
+            //    NameJob = model.NameJob,
+            //    TextJob = model.TextJob,
+            //};
+            _rabbitMqProducer.SendVacanciesMessage<VacancyViewModel>(model);
         }
     }
 }
