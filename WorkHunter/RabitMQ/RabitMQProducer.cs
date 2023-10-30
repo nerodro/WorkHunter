@@ -1,7 +1,10 @@
 ﻿using DomainLayer.Models.Vacancies;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RepositoryLayer.DataBasesContext;
 using ServiceLayer.Property.VacanciesService;
 using ServiceLayer.Property.WorkerService;
 using System.Text;
@@ -21,33 +24,49 @@ namespace Vacancies.RabitMQ
             _rabbitMqConnection = rabbitMqConnection;
             _rabbitMqChannel = rabbitMqChannel;
         }
-        public void Listen<TRequest>(Action<TRequest> on)
-        {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            _rabbitMqChannel = _rabbitMqConnection.CreateModel();
-            _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
-            var consumer = new EventingBasicConsumer(_rabbitMqChannel);
-            consumer.Received += (model, ea) =>
-            {
-                var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
-                // Десериализуем запрос из JSON
-                var request = JsonConvert.DeserializeObject<TRequest>(requestJson);
-                on(request);
-            };
-            _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
-        }
+        
         public void SendVacanciesMessage<T>(VacancyViewModel response)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             _rabbitMqChannel = _rabbitMqConnection.CreateModel();
             _rabbitMqChannel.QueueDeclare("vacancy_requests", false, false, false, null);
             int id = response.CompanyId;
-            var res = _vacancyService.GetVanancy(id);
-             var responseJson = JsonConvert.SerializeObject(res).ToArray();
+            var optionsBuilder = new DbContextOptionsBuilder<VacancyContext>();
+            VanancyModel res = new VanancyModel();
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Vacancies;Username=postgres;Password=nerodro26;");
+            using (var dbContext = new VacancyContext(optionsBuilder.Options))
+            {
+                res = dbContext.Vanancy.FirstOrDefault(x => x.Id == id);
+                dbContext.Dispose();
+            }
+            var responseJson = JsonConvert.SerializeObject(res).ToArray();
 
              var properties = _rabbitMqChannel.CreateBasicProperties();
 
-             _rabbitMqChannel.BasicPublish("", "vacancy_requests", properties, Encoding.UTF8.GetBytes(responseJson));
+             _rabbitMqChannel.BasicPublish("", "company_vacancies_response_queue", properties, Encoding.UTF8.GetBytes(responseJson));
+        }
+        public void ListenAnsw()
+        {
+            var connectionFactory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = connectionFactory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                // Создаем очередь ответов
+                channel.QueueDeclare("vacancy_requests", false, false, false, null);
+                channel.QueueDeclare("company_vacancies_response_queue", false, false, false, null);
+
+                // Создаем обработчик для сообщений из очереди ответов
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, ea) =>
+                {
+                    // Получаем сообщение из очереди и десериализуем его в ответ
+                    var message = Encoding.UTF8.GetString(ea.Body.ToArray());
+                    var request = JsonConvert.DeserializeObject<VacancyViewModel>(message);
+                    SendVacanciesMessage<VacancyViewModel>(request);
+                };
+                _rabbitMqChannel.BasicConsume("vacancy_requests", true, consumer);
+            };
         }
     }
 }

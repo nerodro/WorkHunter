@@ -29,7 +29,7 @@ namespace WorkHunter.Controllers
             _rabbitMqChannel = _rabbitMqConnection.CreateModel();
             _rabbitMqProducer = rabitMQProducer;
             var vac = new RabitMQProducer(vacancyService, _rabbitMqConnection, _rabbitMqChannel);
-            vac.Listen<VacancyViewModel>(CompanyRequest);
+            vac.ListenAnsw();
         }
         
         [HttpGet("GetAllVacancies")]

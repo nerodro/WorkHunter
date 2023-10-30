@@ -173,16 +173,13 @@ namespace JobGiver.Controllers
             var consumer = new EventingBasicConsumer(_rabbitMqChannel);
             consumer.Received += (model, ea) =>
             {
-                if (ea.BasicProperties.CorrelationId == correlationId)
-                {
                     var responseMessage = Encoding.UTF8.GetString(ea.Body.ToArray());
                     //modelvac = JsonConvert.DeserializeObject<List<VacancyViewModel>>(responseMessage);
                     var modelresp = JsonConvert.DeserializeObject<VacancyViewModel>(responseMessage);
                     modelvac.Add(modelresp);
-                    responseWaiter.Set(); // Устанавливаем сигнал о том, что ответ получен
-                }
+                    responseWaiter.Set(); // Устанавливаем сигнал о том, что ответ получ
             };
-            _rabbitMqChannel.BasicConsume(responseQueueName, true, consumer);
+            _rabbitMqChannel.BasicConsume("company_vacancies_response_queue", true, consumer);
 
             // Ждем ответа от сервиса вакансий
             if (!responseWaiter.Wait(TimeSpan.FromSeconds(10)))
