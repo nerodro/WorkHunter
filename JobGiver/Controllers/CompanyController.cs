@@ -122,34 +122,6 @@ namespace JobGiver.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("GetVacanciesCompany/{id}")]
-        public async Task<List<VacancyViewModel>> GetCompanyVacancies(int id)
-        {
-            var request = new VacancyViewModel
-            {
-                CompanyId = id,
-            };
-            var requestJson = JsonConvert.SerializeObject(request);
-            
-            await _rabitMQProducer.SendVacanciesMessage(requestJson);
-            //var response = _rabbitMqChannel.QueueDeclare().QueueName;
-            //var properties = _rabbitMqChannel.CreateBasicProperties();
-            //properties.ReplyTo = "vacancie";
-            List<VacancyViewModel> modelvac = new List<VacancyViewModel>();
-            //var responseWaiter = new ManualResetEventSlim(false);
-            //var consumer = new EventingBasicConsumer(_rabbitMqChannel);
-            //consumer.Received += (model, ea) =>
-            //{
-            //    var response =  _rabitMQListen.TakeVacanciesMessage("vacancie");
-            //    modelvac = JsonConvert.DeserializeObject<List<VacancyViewModel>>(requestJson);
-            //    responseWaiter.Set();
-            //};
-            //_rabbitMqChannel.BasicConsume("vacancie", true, consumer);
-            
-            //var response = await _rabitMQListen.TakeVacanciesMessage("vacancies");
-            //var vacancies = JsonConvert.DeserializeObject<List<VacancyViewModel>>(requestJson);
-            return modelvac;
-        }
         [HttpGet("GetVacanciesForCompan/{id}")]
         public IEnumerable<VacancyViewModel> GetVacanciesForCompany(int id)
         {
@@ -174,20 +146,16 @@ namespace JobGiver.Controllers
             consumer.Received += (model, ea) =>
             {
                     var responseMessage = Encoding.UTF8.GetString(ea.Body.ToArray());
-                    //modelvac = JsonConvert.DeserializeObject<List<VacancyViewModel>>(responseMessage);
                     var modelresp = JsonConvert.DeserializeObject<VacancyViewModel>(responseMessage);
                     modelvac.Add(modelresp);
-                    responseWaiter.Set(); // Устанавливаем сигнал о том, что ответ получ
+                    responseWaiter.Set(); 
             };
             _rabbitMqChannel.BasicConsume("company_vacancies_response_queue", true, consumer);
-
-            // Ждем ответа от сервиса вакансий
             if (!responseWaiter.Wait(TimeSpan.FromSeconds(10)))
             {
                 // Если ответ не получен в течение указанного времени, возвращаем ошибку
                // return InternalServerError(new Exception("Timeout waiting for vacancies response"));
             }
-
             return modelvac;
         }
 
