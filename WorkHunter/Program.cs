@@ -1,10 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
-using RepositoryLayer.DataBasesContext;
-using RepositoryLayer.Infrastructure.Vanancies;
-using RepositoryLayer.Infrastructure.Worker;
+using CompanyRepository.DataBasesContext;
+using CompanyRepository.Infrastructure.Vanancies;
 using ServiceLayer.Property.VacanciesService;
-using ServiceLayer.Property.WorkerService;
 using Vacancies.RabitMQ;
 
 var builder = WebApplication.CreateBuilder(args);

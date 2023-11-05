@@ -1,5 +1,4 @@
-﻿using DomainLayer.Models.JobHunter;
-using DomainLayer.Models.Vacancies;
+﻿using DomainLayer.Models.Vacancies;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.Property.VacanciesService;
 using Vacancies.Models;

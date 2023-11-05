@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using RepositoryLayer.DataBasesContext;
-using RepositoryLayer.Infrastructure.Company;
-using RepositoryLayer.Infrastructure.Worker;
-using ServiceLayer.Property.CompanyService;
+using CompanyRepository.DataBasesContext;
+using CompanyRepository.Infrastructure.Worker;
 using ServiceLayer.Property.WorkerService;
 
 var builder = WebApplication.CreateBuilder(args);

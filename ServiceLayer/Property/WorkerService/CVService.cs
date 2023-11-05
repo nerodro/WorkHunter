@@ -1,7 +1,7 @@
 ﻿using DomainLayer.Models.JobHunter;
 using DomainLayer.Models.Vacancies;
-using RepositoryLayer.Infrastructure.Vanancies;
-using RepositoryLayer.Infrastructure.Worker;
+using CompanyRepository.Infrastructure.Vanancies;
+using CompanyRepository.Infrastructure.Worker;
 using System;
 using System.Collections.Generic;
 using System.Linq;

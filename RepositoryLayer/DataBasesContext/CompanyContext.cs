@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryLayer.DataBasesContext
+namespace CompanyRepository.DataBasesContext
 {
     public class CompanyContext : DbContext
     {

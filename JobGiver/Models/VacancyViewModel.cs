@@ -1,5 +1,4 @@
-﻿using DomainLayer.Models.Vacancies;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Vacancies.Models
 {

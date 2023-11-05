@@ -1,13 +1,13 @@
 ﻿using DomainLayer.Models.Company;
 using Microsoft.EntityFrameworkCore;
-using RepositoryLayer.DataBasesContext;
+using CompanyRepository.DataBasesContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryLayer.Infrastructure.Company
+namespace CompanyRepository.Infrastructure.Company
 {
     public class CompanyLogic<T> : ICompanyLogic<T> where T : CompanyModel
     {

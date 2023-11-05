@@ -1,13 +1,11 @@
-﻿using Company.RabitMQ;
-using DomainLayer.Models.Company;
+﻿using CompanyService.Property.CompanyService;
+using Company.RabitMQ;
+using CompanyDomain.Models.Company;
 using JobGiver.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using ServiceLayer.Property.CompanyService;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System.Text;
 using Vacancies.Models;
 

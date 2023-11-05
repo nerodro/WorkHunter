@@ -1,5 +1,5 @@
 ﻿using DomainLayer.Models.Company;
-using RepositoryLayer.Infrastructure.Company;
+using CompanyRepository.Infrastructure.Company;
 using System;
 using System.Collections.Generic;
 using System.Linq;

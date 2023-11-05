@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DomainLayer\DomainLayer.csproj" />
-    <ProjectReference Include="..\RepositoryLayer\RepositoryLayer.csproj" />
-    <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj" />
+    <ProjectReference Include="..\VacanciesDomain\VacanciesDomain.csproj" />
+    <ProjectReference Include="..\VacanciesRepository\VacanciesRepository.csproj" />
+    <ProjectReference Include="..\VacanciesService\VacanciesService.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RepositoryLayer.DataBasesContext;
+using CompanyRepository.DataBasesContext;
 using ServiceLayer.Property.VacanciesService;
 using System.Text;
 using System.Threading.Channels;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryLayer.Infrastructure.Company
+namespace CompanyRepository.Infrastructure.Company
 {
     public interface ICompanyLogic<T> where T : CompanyModel
     {
